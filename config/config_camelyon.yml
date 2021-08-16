@@ -1,0 +1,14 @@
+# ----- Model options -----
+data_dir            : './prepared_datasets/pre_9_no_norm_patient_split/'
+tensorboard_dir     : './runs'
+outputs_dir         : './camelyon_test'
+ckpt                : # ADD CHECKPOINT PATH HERE
+
+# ----- Training options -----
+total_iterations    : 625000
+nb_batch            : 16
+lambda_l1           : 10.0
+
+# ----- Model options -----
+x_dim               : 112
+z_dim               : 512
