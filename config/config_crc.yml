@@ -1,4 +1,4 @@
-# ----- Model options -----
+# ----- Experiment options -----
 data_dir            : './CRC'
 tensorboard_dir     : './runs'
 outputs_dir         : './crc_test'

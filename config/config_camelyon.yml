@@ -1,4 +1,4 @@
-# ----- Model options -----
+# ----- Experiment options -----
 data_dir            : './prepared_datasets/pre_9_no_norm_patient_split/'
 tensorboard_dir     : './runs'
 outputs_dir         : './camelyon_test'
