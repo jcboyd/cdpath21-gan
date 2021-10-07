@@ -1,5 +1,5 @@
 # ----- Experiment options -----
-data_dir            : './prepared_datasets/pre_9_no_norm_patient_split/'
+data_dir            : './CAMELYON17/'
 tensorboard_dir     : './runs'
 outputs_dir         : './camelyon_test'
 ckpt                : # ADD CHECKPOINT PATH HERE
@@ -12,3 +12,4 @@ lambda_l1           : 10.0
 # ----- Model options -----
 x_dim               : 112
 z_dim               : 512
+masked              : False

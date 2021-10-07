@@ -145,7 +145,16 @@ def main(args, config):
             optimiser_G.zero_grad()
 
             _, gen_imgs = generator(fake_inputs, step, alpha)
-            reg_loss = L1Loss()(gen_imgs, fake_targets)
+
+            if config.masked:
+                top, left = 2 * [gen_imgs.shape[2] // 4]
+                bottom, right = 2 * [gen_imgs.shape[2] - (gen_imgs.shape[2] // 2 - gen_imgs.shape[2] // 4)]
+
+                reg_loss = L1Loss()(gen_imgs[:, :, top:bottom, left:right], fake_targets[:, :, top:bottom, left:right])
+
+            else:
+                reg_loss = L1Loss()(gen_imgs, fake_targets)
+
             d_loss = nn.MSELoss()(discriminator(gen_imgs, step, alpha), valid)
 
             t = (epoch - 1) * steps_per_epoch + batch_i

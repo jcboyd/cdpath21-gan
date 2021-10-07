@@ -1,5 +1,8 @@
 # cdpath21-gan
 
+
+[![Open In Colab](https://colab.research.google.com/drive/19m-mL-7h0OXX2deLQguYiHs-7ouKmvqJ?usp=sharing)
+
 ![Network diagram](http://jcboyd.github.io/assets/cdpath21-gan/network_diagram.png)
 
 Code to train self-supervised adversarial autoencoder for visual field expansion of histopathology tiles [[1]](#Reference).
