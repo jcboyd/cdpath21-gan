@@ -1,7 +1,7 @@
 # cdpath21-gan
 
 
-[![Open In Colab](https://colab.research.google.com/drive/19m-mL-7h0OXX2deLQguYiHs-7ouKmvqJ?usp=sharing)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/19m-mL-7h0OXX2deLQguYiHs-7ouKmvqJ?usp=sharing)
 
 ![Network diagram](http://jcboyd.github.io/assets/cdpath21-gan/network_diagram.png)
 
