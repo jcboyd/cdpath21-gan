@@ -127,14 +127,18 @@ def scale_generator(x_batch, y_batch, size, alpha, x_dim, rescale_size=224):
     x_batch = F.interpolate(x_batch, size=rescale_size, mode='bilinear',
                             align_corners=True)
 
-    margin = (rescale_size - x_dim) // 2
-    x_crop = x_batch[:, :, margin:rescale_size-margin, margin:rescale_size-margin]
+    #margin = (rescale_size - x_dim) // 2
+    #x_crop = x_batch[:, :, margin:rescale_size-margin, margin:rescale_size-margin]
+    xs = torch.randint(0, rescale_size - x_dim, size=(x_batch.shape[0],))
+    ys = torch.randint(0, rescale_size - x_dim, size=(x_batch.shape[0],))
+    coords = torch.cat([xs[:, None], ys[:, None]], axis=1)
+    x_crop = torch.cat([img[:, x:x + x_dim, y:y + x_dim][None] for x, y, img in zip(xs, ys, x_batch)])
 
     ## Hack for autoencoder:
     #x_target = fade_in(x_batch[:, :, margin:rescale_size-margin, margin:rescale_size-margin], size, alpha)
     x_target = fade_in(x_batch, size, alpha)  # alpha = 1 => no fade
 
-    return x_crop, x_target, y_batch
+    return x_crop, x_target, coords, y_batch
 
 # ---------------
 #  VISUALISATION
@@ -195,3 +199,4 @@ def plot_tiles(imgs, emb, grid_units=50, pad=1):
                 img_idx_dict[img_idx] = (x, x + cell_width, s - y - cell_width, s - y)
 
     return canvas, img_idx_dict
+

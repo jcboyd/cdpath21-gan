@@ -150,7 +150,7 @@ class Generator(nn.Module):
                 ConvBlock(8 * nb_filters, 4 * nb_filters, norm=True), Downsample(scale_factor=None, size=4))
 
         self.proj = nn.Linear(self.bottleneck_res ** 2 * self.bottleneck_filters, z_dim)
-        self.deproj = nn.Sequential(nn.Linear(z_dim, nb_filters * 7 * 7),
+        self.deproj = nn.Sequential(nn.Linear(z_dim + 2, nb_filters * 7 * 7),
                                     nn.LeakyReLU(0.1))
 
         self.decoder = nn.Sequential(
@@ -183,9 +183,9 @@ class Generator(nn.Module):
 
         return z
 
-    def decode(self, z, step, alpha):
+    def decode(self, z, coords, step, alpha):
 
-        x = self.deproj(z)
+        x = self.deproj(torch.cat([z, coords], axis=1))
         x = x.view(x.shape[0], self.nb_filters, 7, 7)
 
         idx = 2 * int(step) - 1
@@ -196,10 +196,10 @@ class Generator(nn.Module):
 
         return x
 
-    def forward(self, x, step, alpha):
+    def forward(self, x, coords, step, alpha):
 
         z = self.encode(x)
-        x = self.decode(z, step, alpha)
+        x = self.decode(z, coords, step, alpha)
 
         return z, x
 
@@ -261,3 +261,4 @@ class Discriminator_Gauss(nn.Module):
 
     def forward(self, x):
         return self.validity(x).squeeze()
+

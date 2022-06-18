@@ -27,7 +27,7 @@ def main(args, config):
     if torch.cuda.is_available():
         write_flush('Available devices: %d' % torch.cuda.device_count())
 
-    if 'CAMELYON' in config.data_dir:
+    if True:#'CAMELYON' in config.data_dir:
 
         x_train, y_train, x_valid, y_valid, x_test, y_test = utils.load_data(config.data_dir)
         write_flush(str(x_train.shape))
@@ -125,8 +125,7 @@ def main(args, config):
             iteration += 1
 
             data = utils.scale_generator(*next(train_loader), init_size * 2 ** (step - 1), alpha, config.x_dim)
-            fake_inputs, fake_targets = data[0].to(device), data[1].to(device)
-
+            fake_inputs, fake_targets, fake_coords = data[0].to(device), data[1].to(device), data[2].to(device)
             data = utils.scale_generator(*next(train_loader), init_size * 2 ** (step - 1), alpha, config.x_dim)
             _, real_targets = data[0].to(device), data[1].to(device)
 
@@ -144,7 +143,7 @@ def main(args, config):
 
             optimiser_G.zero_grad()
 
-            _, gen_imgs = generator(fake_inputs, step, alpha)
+            _, gen_imgs = generator(fake_inputs, fake_coords, step, alpha)
 
             if config.masked:
                 top, left = 2 * [gen_imgs.shape[2] // 4]
@@ -211,7 +210,7 @@ def main(args, config):
             x_batch, y_batch = next(val_loader)
 
             data = utils.scale_generator(x_batch, y_batch, init_size * 2 ** (step - 1), alpha, config.x_dim)
-            _, gen_imgs = generator(data[0].to(device), step, alpha)
+            _, gen_imgs = generator(data[0].to(device), data[2].to(device), step, alpha)
 
             mosaique = utils.create_mosaique(gen_imgs.detach().cpu(), nrows=4, ncols=8)
             imsave('%s/generated_%04d.png' % (config.outputs_dir, epoch), mosaique)
@@ -224,14 +223,18 @@ def main(args, config):
             imsave('%s/original_%04d.png' % (config.outputs_dir, epoch), mosaique)
             writer.add_image('targets', np.moveaxis(mosaique, 2, 0), epoch)
 
-            samples = generator.decode(z_sample, step, alpha)
+            xs = torch.randint(0, x_batch.shape[2] - config.x_dim, size=(x_batch.shape[0],))
+            ys = torch.randint(0, x_batch.shape[2] - config.x_dim, size=(x_batch.shape[0],))
+            coords = torch.cat([xs[:, None], ys[:, None]], axis=1).to(device)
+
+            samples = generator.decode(z_sample, coords, step, alpha)
             mosaique = utils.create_mosaique(samples.detach().cpu(), nrows=4, ncols=8)
             imsave('%s/samples_%04d.png' % (config.outputs_dir, epoch), mosaique)
             writer.add_image('samples', np.moveaxis(mosaique, 2, 0), epoch)
 
             generator.train()
 
-        if epoch % 100 == 0:
+        if epoch % 25 == 0:
 
             checkpoint = {'generator' : generator,
                           'discriminator' : discriminator,
@@ -273,3 +276,4 @@ if __name__ == '__main__':
     config = collections.namedtuple('Config', cfg.keys())(*cfg.values())
 
     main(args, config)
+
