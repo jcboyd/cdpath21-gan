@@ -9,4 +9,4 @@ For the CAMELYON17 option, we adopt the same naming convention as in the [PatchC
 $ aws s3 cp --no-sign-request s3://camelyon-dataset/CAMELYON17 .
 ```
 
-Run (or adapt) `camelyon_dataset.py` to produce train, validation, and test datasets from `meta_split.csv`. N.B. this requires a lot of RAM.
+Run (or adapt) [`camelyon_dataset.py`](https://github.com/jcboyd/cdpath21-gan/blob/main/data/camelyon_dataset.py) to produce train, validation, and test datasets from [`meta_split.csv`](https://github.com/jcboyd/cdpath21-gan/blob/main/data/meta_split.csv). N.B. this requires a lot of RAM.
